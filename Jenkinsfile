@@ -8,15 +8,10 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                script {
-                    // Ensure Jenkins pulls the correct branch "main"
-                    checkout([$class: 'GitSCM', 
-                        branches: [[name: '*/main']], 
-                        userRemoteConfigs: [[url: 'https://github.com/hakerpapplu/StudentProject.git']]
-                    ])
-                }
+                git credentialsId: '53d25c8d-d37a-4193-a476-951cd3a163ae', branch: 'main', url: 'https://github.com/hakerpapplu/StudentProject.git'
             }
         }
+    }
 
         stage('Build Docker Image') {
             steps {
