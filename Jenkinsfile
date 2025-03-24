@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git credentialsId: '53d25c8d-d37a-4193-a476-951cd3a163ae', branch: 'main', url: 'https://github.com/hakerpapplu/StudentProject.git'
+                git credentialsId: '1b6a864c-fa5e-4ae2-a102-55d7e04784e8', branch: 'main', url: 'https://github.com/hakerpapplu/StudentProject.git'
             }
         }
     }
