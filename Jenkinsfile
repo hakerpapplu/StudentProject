@@ -2,41 +2,35 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "hakerpapplu/studentproject:latest"
+        IMAGE_NAME = 'hakerpapplu/studentproject'
+        CONTAINER_NAME = 'studentproject'
     }
 
     stages {
-        stage('Checkout Code') {
+        stage('Clone Repository') {
             steps {
-                git credentialsId: '1b6a864c-fa5e-4ae2-a102-55d7e04784e8', branch: 'main', url: 'https://github.com/hakerpapplu/StudentProject.git'
+                git branch: 'main', url: 'https://github.com/hakerpapplu/StudentProject.git'
             }
         }
-    }
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    sh 'docker build -t $DOCKER_IMAGE .'
-                }
-            }
-        }
-
-        stage('Login to Docker Hub') {
-            steps {
-                script {
-                    withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                        sh 'docker login -u your-dockerhub-username -p $DOCKER_PASSWORD'
-                    }
-                }
+                bat "docker build -t %IMAGE_NAME% ."
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    sh 'docker push $DOCKER_IMAGE'
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        bat """
+                        echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+                        docker push %IMAGE_NAME%
+                        """
+                    }
                 }
             }
-        }
-    }
+        }
+
+    }
 }
