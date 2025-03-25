@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'hakerpapplu/studentproject'
+        IMAGE_NAME = 'hackerpapplu/studentproject'
         CONTAINER_NAME = 'studentproject'
     }
 
@@ -15,7 +15,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t $IMAGE_NAME ."
+                bat "docker build -t %IMAGE_NAME% ."
             }
         }
 
@@ -23,13 +23,14 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                        sh """
-                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                        docker push $IMAGE_NAME
+                        bat """
+                        echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+                        docker push %IMAGE_NAME%
                         """
                     }
                 }
             }
         }
+
     }
 }
